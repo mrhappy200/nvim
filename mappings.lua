@@ -30,6 +30,35 @@ return {
     -- tables with the `name` key will be registered with which-key if it's installed
     -- this is useful for naming menus
     ["<leader>b"] = { name = "Buffers" },
+    ["<leader>lth"] = {
+      function()
+        require'rust-tools'.hover_actions.hover_actions()
+      end,
+      desc = "Hover actions",
+    },
+    ["<leader>ltmu"] = {
+      function()
+        local up = true
+        require'rust-tools'.move_item.move_item(up)
+      end,
+      desc = "Move item up",
+    },
+    ["<leader>ltmd"] = {
+      function()
+        local down = false
+        require'rust-tools'.move_item.move_item(down)
+      end,
+      desc = "Move item down",
+    },
+    ["<leader>ltr"] = {
+      function()
+        require'rust-tools'.runnables.runnables()
+      end,
+      desc = "Runnables"
+    },
+    ["<leader>lt"] = { name = "Rust-tools" },
+    ["<leader>ltm"] = { name = "Move item" },
+
     -- quick save
     -- ["<C-s>"] = { ":w!<cr>", desc = "Save File" },  -- change description but the same command
   },

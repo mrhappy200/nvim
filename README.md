@@ -1,121 +1,112 @@
-<h1 align="center">
-<a href='#'><img src="https://raw.githubusercontent.com/catppuccin/catppuccin/main/assets/palette/macchiato.png" width="600px"/></a>
-  <br>
-  <br>
-  <div>
-    <a href="https://github.com/redyf/Neve/issues">
-        <img src="https://img.shields.io/github/issues/redyf/Neve?color=fab387&labelColor=303446&style=for-the-badge">
-    </a>
-    <a href="https://github.com/redyf/Neve/stargazers">
-        <img src="https://img.shields.io/github/stars/redyf/Neve?color=ca9ee6&labelColor=303446&style=for-the-badge">
-    </a>
-    <a href="https://github.com/redyf/Neve">
-        <img src="https://img.shields.io/github/repo-size/redyf/Neve?color=ea999c&labelColor=303446&style=for-the-badge">
-    </a>
-    <a href="https://github.com/redyf/Neve/blob/main/LICENCE">
-        <img src="https://img.shields.io/static/v1.svg?style=for-the-badge&label=License&message=MIT&logoColor=ca9ee6&colorA=313244&colorB=cba6f7"/>
-    </a>
-    <br>
-            <img href="https://builtwithnix.org" src="https://builtwithnix.org/badge.svg"/>
-    </div>
-   </h1>
+# kickstart.nixvim
 
-<h1 align="center">❄️ Neve ❄️</h1>
-<h3 align="center">
+>**NOTE**
+> This repo is a WORK IN PROGRESS
 
-<details>
-    <summary>Showcase</summary>
+## Introduction
 
-![Neve](./assets/showcase1.png)
-![Neve2](./assets/showcase2.png)
-![Neve3](./assets/showcase3.png)
-![Neve4](./assets/showcase4.png)
-![Neve5](./assets/showcase5.png)
+This repo is a personal project to learn Nix & Nixvim within NixOS while also learning/setting up [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim).
+I have attempted to be as true to kickstart as possible while adding new and updated comments to help those learning Nix.
 
-</details>
+### Caveats
 
-</h3>
+1. Nix does not lend itself to the same separation paradigms used by kickstart.nvim. The idea of keeping the configuration as a single file
+similar to kickstart.nvim was originally planned but as I translated more of the init.lua over I found Nix lended itself better to a more
+modular implementation. This means most plugins have their own .nix files that are imported into the base nixvim.nix file.
+2. I used as little lua code as possible in the .nix files but due to Nixvim being a relatively new Nix module not everything can be natively configured. Any lua code will slowly be removed as new Nixvim features come out that allow for native methods of configuation.
+3. I did not include Lazy nor Mason as I felt those both went against the Nix philosophy of having all your dependencies installed and managed through the .nix files. While it is possible to confgiure Lazy in Nixvim the implementation is very limited at the moment. Further enhancements to Lazy which would allow lazy loading are being discussed [here](https://github.com/nix-community/nixvim/issues/421) and I may update this repo to use Lazy when these features are implemented.
+4. kickstart.nixvim is somewhat slower than kickstart.nvim, some of this has to do with the fact that this repo is not using Lazy. I'll have to do futher investigation to identify how else to speed up this implementation.
 
-## What's Neve??
+# Installation
 
-Neve (snow in portuguese) is a meticulously crafted custom configuration for Nixvim, designed to revolutionize your development workflow and provide an unparalleled coding experience. This configuration is the culmination of expertise and passion, aiming to provide sane defaults.
+This installation process assumes you understand the basics of importing and adding dependencies to your .nix configuration file.
+This installation process also assumes you are running NixOS, this repo should work the same with a home-manager configuration not on NixOS but I have not confirmed this yet. I plan to add more options for installation once i've had the time to study Nix a bit more.
 
-## Features
+## Install External Dependencies
 
-- **Powerful Development Environment:** Neve is tailored to deliver a robust and efficient development environment. With carefully selected plugins, optimized settings, and thoughtful customization, it ensures that your coding journey is both smooth and productive.
+- Basic utils: `git`, C Compiler (`gcc`)
+- [ripgrep](https://github.com/BurntSushi/ripgrep#installation)
+- Clipboard tool (xclip/xsel/win32yank or other depending on platform)
+- A [Nerd Font](https://www.nerdfonts.com/): optional, provides various icons
+  - if you have it set `have_nerd_font` in `nixvim.nix` to true
+- Language Dependencies:
+  - If you want to write Typescript, you will need `npm`
+  - If you want to write Golang, you will need `go`
+  - etc.
 
-- **Nixvim Integration:** Built on the foundation of Nixvim, Neve seamlessly integrates with the powerful Nix package manager. This integration not only simplifies the setup process but also guarantees a consistent and reproducible development environment across different machines.
+## Installing Nixvim Module
 
-- **Thoughtful Customization:** Neve doesn't just stop at default settings. It's designed to be easily customizable, allowing you to tailor your Nixvim experience to match your unique preferences and workflow.
+This repo is currently setup to be imported into your current NixOS/Home-Manager module. 
+To setup the Nixvim module follow the steps found [here](https://nix-community.github.io/nixvim/user-guide/install.html) under the **Usage as a module (NixOS, home-manager, nix-darwin)** section.
 
-- **Extensive Plugin Support:** Benefit from a curated selection of plugins that cover a wide range of programming languages and development tasks. Neve comes with pre-configured plugins to boost your productivity, and you can effortlessly expand its capabilities to suit your specific needs.
+## Setting up kickstart.nixvim
 
-## Installation
+>**NOTE**
+> Backup your previous configuration (if any exists)
+> This can be found on Linux under the path `$XDG_CONFIG_HOME/nvim` or `~/.config/nvim`
 
-Getting started with Neve is a breeze. Simply follow the installation guide below, and you'll be up and running in no time.
+1. [Fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) this repo
+so that you have your own copy that you can update and version control.
+>**NOTE**
+> This is not required but recommended so you can version control your own kickstart.nixvim configuration.
+2. Clone kickstart.nixvim
+    * If you created your own fork
+      ```sh
+      cd /etc/nixos/
+      git clone https://github.com/<YOUR-GITHUB-USERNAME>/kickstart.nixvim.git
+      ```
+    * If you skipped creating a fork
+      ```sh
+      cd /etc/nixos/
+      git clone https://github.com/JMartJonesy/kickstart.nixvim.git
+      ```
+3. Import nixvim.nix into your .nix configuration file
+    * Example of the line to add into your configuration.nix file (or home.nix if you are using home-manager)
+      ```nix
+      imports = [
+        ./kickstart.nixvim/nixvim.nix
+      ];
+      ```
+4. Open nixvim.nix and uncomment one of the nixvim module imports at the top of the file. Choose the module depending on which module installation method you use from the [Installing Nixvim Module](#installing-nixvim-module) section above (Home-Manager module, NixOS module, or Darwin Module).
+    * The module should be passed into your configuration through the `inputs` nixos param
+    ```nix
+    # Uncomment if you are using the home-manager module
+    #inputs.nixvim.homeManagerModules.nixvim
+    # Uncomment if you are using the nixos module
+    #inputs.nixvim.nixosModules.nixvim
+    # Uncomment if you are using the nix-darwin module
+    #inputs.nixvim.nixDarwinModules.nixvim
+    ```
+5. Rebuild your NixOS configuration
+   * Without using Flake
+     ```sh
+     nixos-rebuild switch
+     ```
+6. Confirm your init.lua file has been created and loads without errors
+   * Open the generated init.lua file and confirm no error dialog appears when opening
+     ```sh
+     nvim ~/.config/nvim/init.lua
+     ``` 
 
-However if you'd like to give it a try before installing, <b>nix run github:redyf/neve</b> is available!
+# FAQ
 
-<details>
-    <summary><b>INSTALLATION GUIDE</b></summary>
-    I'm assuming you already use nix flakes but in case you don't, please check this tutorial to enable them:
-
-[Flakes](https://nixos.wiki/wiki/Flakes)
-
-After enabling it, follow the steps below:
-
-1- Go to flake.nix and add Neve.url = "github:redyf/Neve" to your inputs.
-
-2- Run nix flake update, then Neve should be available for installation.
-
-3- Install it by adding `inputs.Neve.packages.${pkgs.system}.default` to your environment.systemPackages or home.packages if you're using home-manager.
-
-4- Rebuild your system and you should be done :
-
-</details>
-
-## How to customize the install
-
-<p>If you would like to customize Neve to your liking, check this out!</p>
-
-1- Fork the repo (you can also change the name of the fork if you want).
-
-2- Clone the fork.
-
-3- Make the changes you want, such as enabling/disabling plugins, changing colorschemes, changing neovim options, etc.
-
-4- Add the fork to your flake.nix file, the original is `Neve.url = “github:redyf/Neve”`. If a user called foo forks the repo and renames it to bar, it would be `bar.url = “github:foo/bar”`.
-
-5- Update your inputs and install the fork with `inputs.Neve.packages.${pkgs.system}.default`.
-
-6- Rebuild the system and you should be done!
-
-## Quick Start
-
-Neve is highly customizable. Here are some important files for configuring your environment:
-
-- **config/default.nix:** This file contains the main configuration file. You can add or delete plugins as you like.
-
-- **config/sets/set.nix:** In this file, you can add or remove options and adjust their specific settings.
-
-- **config/keys.nix:** This file contains custom key mappings. You can add your own keyboard shortcuts to enhance productivity.
-
-- **config/lsp/lsp-nvim.nix:** Here you can configure your preferred Language Servers.
-
-- **config/lsp/conform.nix:** Configure Formatters for the desired languages.
-
-- **config/languages/nvim-lint.nix:** Set up linters for specific languages.
-
-## Contribution
-
-Contributions are welcome! Feel free to [open an issue](https://github.com/redyf/Neve/issues) to report problems, suggest improvements, or submit pull requests to add new features to Neve.
-
-## License
-
-This project is licensed under the [MIT License](LICENCE). See the LICENSE file for more details.
-
-## Support
-
-Encountered an issue or have a question? Visit our [Issue Tracker](https://github.com/redyf/Neve/issues) or message me on Discord, my username is **redyf**.
-
-Happy coding!
+* What should I do if I already have a pre-existing neovim configuration?
+  * You should back it up and then delete all associated files.
+  * This includes your existing init.lua and the neovim files in `~/.local`
+    which can be deleted with `rm -rf ~/.local/share/nvim/`
+* Can I keep my existing configuration in parallel to kickstart.nixvim?
+  * Yes! You can use [NVIM_APPNAME](https://neovim.io/doc/user/starting.html#%24NVIM_APPNAME)`=nvim-NAME`
+    to maintain multiple configurations. For example, move your old configuration to
+    `~/.config/nvim-backup` and create an alias:
+    ```
+    alias nvim-backup='NVIM_APPNAME="nvim-backup" nvim'
+    ```
+    When you run Neovim using `nvim-backup` alias it will use the alternative
+    config directory and the matching local directory
+    `~/.local/share/nvim-backup`.
+* What if I want to "uninstall" kickstart.nixvim:
+   1. Remove nixvim.nix import from your configuration.nix file (or home.nix if you are using home-manager)
+   2. Remove the kickstart.nixvim directory `rm -r /etc/nixos/kickstart.nixvim`
+   3. Remove any .local nvim files `rm -rf ~/.local/share/nvim/`
+   4. **Optional:** Move your previously backed up lua configuration files to `$XDG_CONFIG_HOME/nvim` or `~/.config/nvim`
+   5. Rebuild your NixOS configuration `nixos-rebuild switch`

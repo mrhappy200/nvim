@@ -1,52 +1,52 @@
 {
-  description = "Neve is a Neovim configuration built with Nixvim, which allows you to use Nix language to manage Neovim plugins/options";
+  description = "Nix/Nixvim implementation of kickstart.nvim";
 
   inputs = {
-    nixvim.url = "github:nix-community/nixvim";
-    flake-utils.url = "github:numtide/flake-utils";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    flake-parts.url = "github:hercules-ci/flake-parts";
   };
 
-  outputs =
-    {
-      self,
-      nixpkgs,
-      nixvim,
-      flake-utils,
-      ...
-    }@inputs:
-    let
-      config = import ./config; # import the module directly
-    in
-    flake-utils.lib.eachDefaultSystem (
-      system:
-      let
+  outputs = {
+    nixvim,
+    flake-parts,
+    ...
+  } @ inputs:
+    flake-parts.lib.mkFlake {inherit inputs;} {
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "x86_64-darwin"
+        "aarch64-darwin"
+      ];
+
+      perSystem = {
+        pkgs,
+        system,
+        ...
+      }: let
         nixvimLib = nixvim.lib.${system};
-        pkgs = import nixpkgs { inherit system; };
         nixvim' = nixvim.legacyPackages.${system};
-        nvim = nixvim'.makeNixvimWithModule {
+        nixvimModule = {
           inherit pkgs;
-          module = config;
-          # You can use `extraSpecialArgs` to pass additional arguments to your module files
+          module = import ./config;
           extraSpecialArgs = {
-            inherit self;
           };
         };
-      in
-      {
+        nvim = nixvim'.makeNixvimWithModule nixvimModule;
+      in {
         checks = {
-          # Run `nix flake check .` to verify that your config is not broken
-          default = nixvimLib.check.mkTestDerivationFromNvim {
-            inherit nvim;
-            name = "Neve";
-          };
+          default = nixvimLib.check.mkTestDerivationFromNixvimModule nixvimModule;
         };
+
+        formatter = pkgs.alejandra;
 
         packages = {
-          # Lets you run `nix run .` to start nixvim
           default = nvim;
         };
-
-        formatter = pkgs.nixfmt-rfc-style;
-      }
-    );
+      };
+    };
 }

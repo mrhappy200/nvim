@@ -6,8 +6,19 @@
 
     settings = {
       # TODO: Don't think I need this as nixGrammars is true which should atuo install these???
-      ensureInstalled =
-        [ "bash" "c" "diff" "html" "lua" "luadoc" "markdown" "vim" "vimdoc" ];
+      ensureInstalled = [
+        "bash"
+        "c"
+        "diff"
+        "html"
+        "lua"
+        "luadoc"
+        "markdown"
+        "vim"
+        "vimdoc"
+        "wgsl"
+        "rust"
+      ];
       indent.enable = true;
     };
 

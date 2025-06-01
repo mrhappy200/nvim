@@ -78,9 +78,8 @@
         installCargo = false;
         installRustc = false;
       };
-      nixd = {
-        enable = true;
-      };
+      nixd = { enable = true; };
+      wgsl_analyzer = { enable = true; };
       # ...etc. See `https://nix-community.github.io/nixvim/plugins/lsp` for a list of pre-configured LSPs
       #
       # Some languages (like typscript) have entire language plugins that can be useful:

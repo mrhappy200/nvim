@@ -26,6 +26,7 @@
     # Add your plugins to ./plugins/custom/plugins and import them below
     ./plugins/custom/plugins/vimtex.nix
     ./plugins/custom/plugins/yuck.nix
+    ./plugins/custom/plugins/parinfer.nix
   ];
 
   /*

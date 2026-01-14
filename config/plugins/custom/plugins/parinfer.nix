@@ -1,6 +1,6 @@
 { pkgs, ... }:
 {
-  plugins.parinfer = {
+  plugins.parinfer-rust = {
     enable = true;
   };
 }
